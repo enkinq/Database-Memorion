@@ -1,0 +1,24 @@
+# Options
+Options -Indexes
+
+# Header & CORS support for Apache
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-KEY"
+</IfModule>
+
+# Ensure Authorization and Custom Headers are passed to PHP
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    RewriteCond %{HTTP:X-API-KEY} .
+    RewriteRule .* - [E=HTTP_X_API_KEY:%{HTTP:X-API-KEY}]
+</IfModule>
+
+# Protect config files
+<FilesMatch "^(config\.php|\.env|composer\.json)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
